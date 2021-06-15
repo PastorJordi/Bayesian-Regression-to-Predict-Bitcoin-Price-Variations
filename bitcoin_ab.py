@@ -59,7 +59,7 @@ def computeDelta(wt, X, Xi):
 
     numerator, denominator = 0, 0
     n = len(X) - 1
-    matrx = Xi.as_matrix()
+    matrx = Xi.values # replacing .as_matrix() due to deprecation, using .values instead
     for i in range(0,len(matrx)):
         numerator +=  (matrx[i][n] * math.exp(wt * measure(X[0:n], matrx[i][0:n])))
         denominator += math.exp(wt * measure(X[0:n], matrx[i][0:n]))
@@ -74,11 +74,11 @@ weight = 2  # This constant was not specified in the paper, but we will use 2.
 trainDeltaP90 = np.empty(0)
 trainDeltaP180 = np.empty(0)
 trainDeltaP360 = np.empty(0)
-for i in xrange(0,len(train1_90.index)) :
+for i in range(0,len(train1_90.index)) :
   trainDeltaP90 = np.append(trainDeltaP90, computeDelta(weight,train2_90.iloc[i],train1_90))
-for i in xrange(0,len(train1_180.index)) :
+for i in range(0,len(train1_180.index)) :
   trainDeltaP180 = np.append(trainDeltaP180, computeDelta(weight,train2_180.iloc[i],train1_180))
-for i in xrange(0,len(train1_360.index)) :
+for i in range(0,len(train1_360.index)) :
   trainDeltaP360 = np.append(trainDeltaP360, computeDelta(weight,train2_360.iloc[i],train1_360))
 
 
@@ -101,7 +101,7 @@ trainData = pd.DataFrame(d)
 # YOUR CODE HERE
 model = smf.ols(formula = 'deltaP ~ deltaP90 + deltaP180 + deltaP360', data = trainData).fit()
 # Print the weights from the model
-print model.params
+print(model.params)
 
 
 # Perform the Bayesian Regression to predict the average price change for each dataset of test using train1 as input.
@@ -109,11 +109,11 @@ print model.params
 # YOUR CODE HERE
 weight = 2 
 testDeltaP90 = testDeltaP180 = testDeltaP360 = np.empty(0)
-for i in xrange(0,len(train1_90.index)) :
+for i in range(0,len(train1_90.index)) :
   testDeltaP90 = np.append(testDeltaP90, computeDelta(weight,test_90.iloc[i],train1_90))
-for i in xrange(0,len(train1_180.index)) :
+for i in range(0,len(train1_180.index)) :
   testDeltaP180 = np.append(testDeltaP180, computeDelta(weight,test_180.iloc[i],train1_180))
-for i in xrange(0,len(train1_360.index)) :
+for i in range(0,len(train1_360.index)) :
   testDeltaP360 = np.append(testDeltaP360, computeDelta(weight,test_360.iloc[i],train1_360))
 
 # Actual deltaP values for test data.
@@ -142,4 +142,4 @@ compareDF = pd.DataFrame(compare)
 MSE = 0.0
 # YOUR CODE HERE
 MSE = sm.mean_squared_error(compareDF['Actual'],compareDF['Predicted'])
-print "The MSE is %f" % (MSE)
+print("The MSE is %f" % (MSE))
